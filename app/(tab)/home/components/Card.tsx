@@ -18,19 +18,14 @@ export function Card({
   const { dragStart, dragOffset, handlers } = useDrag({ onSwipe });
 
   return (
-    <motion.div
-      className="w-full h-screen flex items-center justify-center p-4"
-      initial="offscreen"
-      whileInView="onscreen"
-      viewport={{ once: false, amount: 0.8 }}
-    >
+    <div className="w-full h-[calc(100vh-7rem)] flex items-center justify-center px-4">
       <div
         ref={cardRef}
-        className="relative w-full max-w-md aspect-[9/16] rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing"
+        className="relative w-full max-w-md aspect-[3/4] rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing shadow-xl dark:border dark:border-white/20"
         {...handlers}
         style={{
           transform: `translateX(${dragOffset}px) rotate(${
-            dragOffset * 0.1
+            dragOffset * 0.05
           }deg)`,
           transition: dragStart ? "none" : "transform 0.3s ease-out",
         }}
@@ -44,6 +39,6 @@ export function Card({
           description={description}
         />
       </div>
-    </motion.div>
+    </div>
   );
 }

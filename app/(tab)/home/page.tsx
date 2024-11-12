@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card } from "@/app/(tab)/home/components/Card";
+import { Card } from "./components/Card";
 import { profiles } from "./data/profiles";
 
 export default function HomePage() {
@@ -13,27 +13,25 @@ export default function HomePage() {
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      const currentTime = Date.now();
-      const timeDiff = currentTime - lastScrollTime;
+      if (isScrolling || Date.now() - lastScrollTime < 1000) return;
+      if (Math.abs(e.deltaY) < 50) return;
 
-      if (isScrolling || timeDiff < 500) return;
-      if (Math.abs(e.deltaY) < 30) return;
+      const nextIndex =
+        e.deltaY > 0
+          ? Math.min(currentIndex + 1, profiles.length - 1)
+          : Math.max(currentIndex - 1, 0);
 
-      if (e.deltaY > 0 && currentIndex < profiles.length - 1) {
-        setCurrentIndex((prev) => prev + 1);
+      if (nextIndex !== currentIndex) {
+        setCurrentIndex(nextIndex);
         setIsScrolling(true);
-      } else if (e.deltaY < 0 && currentIndex > 0) {
-        setCurrentIndex((prev) => prev - 1);
-        setIsScrolling(true);
+        lastScrollTime = Date.now();
+        setTimeout(() => setIsScrolling(false), 1000);
       }
-
-      lastScrollTime = currentTime;
-      setTimeout(() => setIsScrolling(false), 300);
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [currentIndex, isScrolling]);
+  }, [currentIndex, isScrolling, profiles.length]);
 
   const handleSwipe = (direction: "left" | "right") => {
     if (direction === "left") {
@@ -48,9 +46,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="relative h-[calc(100vh-7rem)]">
       <div
-        className="h-screen transition-transform duration-1000 ease-in-out"
+        className="h-full transition-transform duration-700 ease-in-out"
         style={{ transform: `translateY(-${currentIndex * 100}%)` }}
       >
         {profiles.map((profile) => (
