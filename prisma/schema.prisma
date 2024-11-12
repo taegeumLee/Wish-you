@@ -15,10 +15,11 @@ datasource db {
 
 model User {
   id           Int       @id @default(autoincrement())
-  password     String
+  password     String?
   name         String
   email        String    @unique
   profileImage String
+  phoneNumber  String?   @unique
   height       Float?
   age          Int?
   description  String?
@@ -27,6 +28,10 @@ model User {
   ChatRoom     ChatRoom? @relation(fields: [chatRoomId], references: [id])
   chatRoomId   Int?
   Message      Message[]
+  //social login
+  googleId     String?   @unique
+  naverId      String?   @unique
+  kakaoId      String?   @unique
 }
 
 model ChatRoom {

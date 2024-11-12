@@ -11,7 +11,7 @@ export default function Header() {
           href="/home"
           className="text-2xl font-bold text-black dark:text-white"
         >
-          Taegram
+          MinsTaegram
         </Link>
         <div className="flex items-center gap-4">
           <button className="p-2">

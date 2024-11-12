@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HomeIcon as HomeIconOutline } from "@heroicons/react/24/outline";
-import { HomeIcon as HomeIconSolid } from "@heroicons/react/24/solid";
+import { GoHome as HomeIconOutline } from "react-icons/go";
+import { GoHomeFill as HomeIconSolid } from "react-icons/go";
 
 import { UserIcon as UserIconOutline } from "@heroicons/react/24/outline";
 import { UserIcon as UserIconSolid } from "@heroicons/react/24/solid";
