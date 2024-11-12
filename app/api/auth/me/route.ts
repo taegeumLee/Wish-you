@@ -4,7 +4,8 @@ import db from "@/lib/db";
 
 export async function GET() {
   try {
-    const userId = cookies().get("userId")?.value;
+    const cookieStore = await cookies();
+    const userId = cookieStore.get("userId")?.value;
 
     if (!userId) {
       return NextResponse.json(

@@ -15,6 +15,7 @@ datasource db {
 
 model User {
   id           Int       @id @default(autoincrement())
+  likePoint    Int       @default(36)
   password     String?
   name         String
   email        String    @unique

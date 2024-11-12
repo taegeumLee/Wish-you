@@ -1,3 +1,5 @@
 {
-  "cSpell.words": ["hookform", "kakao", "naver", "Taegram"]
+  "cSpell.words": ["hookform", "kakao", "naver", "signup", "Taegram"],
+  "WillLuke.nextjs.addTypesOnSave": true,
+  "WillLuke.nextjs.hasPrompted": true
 }

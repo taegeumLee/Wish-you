@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import type { CardProps } from "@/types/profile";
 import { useDrag } from "../hooks/useDrag";
 import { CardOverlay } from "./cardsOverlay";
 import { ProfileInfo } from "./profileInfo";
 
-export function Card({
+export const Card = memo(function Card({
   image,
   name,
   age,
@@ -41,4 +41,4 @@ export function Card({
       </div>
     </div>
   );
-}
+});

@@ -8,15 +8,20 @@ interface User {
   name: string;
   profileImage: string;
 }
-
+interface SignUpForm {
+  email: string;
+  password: string;
+  name: string;
+}
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  signup: (data: SignUpForm) => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -40,38 +45,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (email: string, password: string) => {
-    const response = await fetch("/api/auth/login", {
+    const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
     if (!response.ok) {
-      throw new Error("로그인에 실패했습니다");
+      const errorData = await response.json();
+      throw new Error(errorData.error || "로그인에 실패했습니다");
     }
 
-    const userData = await response.json();
-    setUser(userData);
-    router.push("/home");
+    const data = await response.json();
+    if (data.success) {
+      setUser(data.user);
+      router.push("/home");
+      router.refresh();
+    }
   };
 
   const logout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setUser(null);
-    router.push("/");
+    const response = await fetch("/api/auth/logout", { method: "POST" });
+    if (response.ok) {
+      setUser(null);
+      router.push("/");
+      router.refresh();
+    }
+  };
+
+  const signup = async (data: SignUpForm) => {
+    const response = await fetch("/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error("회원가입에 실패했습니다");
+    }
+
+    const { user } = await response.json();
+    setUser(user);
+    router.push("/home");
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, signup }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-};
+}

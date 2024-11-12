@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -10,11 +10,14 @@ import {
   type PasswordForm,
 } from "../schemas/auth";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+  const { login } = useAuth();
 
   const emailForm = useForm<EmailForm>({
     resolver: zodResolver(emailSchema),
@@ -23,6 +26,12 @@ export default function LoginForm() {
   const passwordForm = useForm<PasswordForm>({
     resolver: zodResolver(passwordSchema),
   });
+
+  useEffect(() => {
+    if (showPassword && passwordInputRef.current) {
+      passwordInputRef.current.focus();
+    }
+  }, [showPassword]);
 
   const onEmailSubmit = async (data: EmailForm) => {
     try {
@@ -48,26 +57,31 @@ export default function LoginForm() {
     try {
       const response = await fetch("/api/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           email: emailForm.getValues("email"),
           password: data.password,
         }),
       });
 
-      const result = await response.json();
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "로그인에 실패했습니다");
+      }
 
-      if (response.ok) {
+      const userData = await response.json();
+      if (userData.success) {
         router.push("/home");
-        router.refresh(); // 전체 앱 상태 새로고침
-      } else {
-        passwordForm.setError("password", {
-          message: result.error || "로그인에 실패했습니다",
-        });
+        router.refresh();
       }
     } catch (error) {
       passwordForm.setError("password", {
-        message: "로그인 중 오류가 발생했습니다",
+        message:
+          error instanceof Error
+            ? error.message
+            : "로그인 중 오류가 발생했습니다",
       });
     }
   };
@@ -105,6 +119,7 @@ export default function LoginForm() {
             <input
               type="password"
               {...passwordForm.register("password")}
+              ref={passwordInputRef}
               className="w-full px-4 py-2.5 bg-white dark:bg-zinc-800 text-black dark:text-white rounded-lg border border-gray-200 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-400 placeholder:text-sm focus:outline-none focus:ring-2"
               placeholder="비밀번호를 입력하세요"
             />
