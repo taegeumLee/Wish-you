@@ -27,11 +27,11 @@ const NavItem = ({ href, SolidIcon, OutlineIcon }: NavItemProps) => {
   const isActive = pathname === href;
 
   return (
-    <Link href={href} className="p-3.5">
+    <Link href={href} className="p-2.5">
       {isActive ? (
-        <SolidIcon className="size-8 text-black dark:text-white" />
+        <SolidIcon className="size-7 text-black dark:text-white" />
       ) : (
-        <OutlineIcon className="size-8 text-black/70 dark:text-white/70" />
+        <OutlineIcon className="size-7 text-black/70 dark:text-white/70" />
       )}
     </Link>
   );
@@ -47,7 +47,7 @@ const navigationItems = [
 
 export default function TabBar() {
   return (
-    <nav className="flex w-full fixed bottom-0 bg-white pb-6 dark:bg-neutral-900 border-t rounded-t-lg border-neutral-200 dark:border-neutral-800 justify-between items-center px-3 py-1">
+    <nav className="flex w-full max-w-md fixed bottom-0 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 justify-between items-center px-4 h-14">
       {navigationItems.map((item) => (
         <NavItem key={item.href} {...item} />
       ))}

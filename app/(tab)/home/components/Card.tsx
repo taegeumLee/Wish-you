@@ -18,10 +18,10 @@ export function Card({
   const { dragStart, dragOffset, handlers } = useDrag({ onSwipe });
 
   return (
-    <div className="w-full h-[calc(100vh-7rem)] flex items-center justify-center px-4">
+    <div className="w-full h-full flex items-center justify-center px-4">
       <div
         ref={cardRef}
-        className="relative w-full max-w-md aspect-[3/4] rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing shadow-xl dark:border dark:border-white/20"
+        className="relative w-full max-w-md aspect-[4/6] rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing shadow-xl dark:border dark:border-white/20"
         {...handlers}
         style={{
           transform: `translateX(${dragOffset}px) rotate(${

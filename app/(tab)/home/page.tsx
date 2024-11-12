@@ -13,7 +13,7 @@ export default function HomePage() {
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      if (isScrolling || Date.now() - lastScrollTime < 1000) return;
+      if (isScrolling || Date.now() - lastScrollTime < 500) return;
       if (Math.abs(e.deltaY) < 50) return;
 
       const nextIndex =
@@ -25,7 +25,7 @@ export default function HomePage() {
         setCurrentIndex(nextIndex);
         setIsScrolling(true);
         lastScrollTime = Date.now();
-        setTimeout(() => setIsScrolling(false), 1000);
+        setTimeout(() => setIsScrolling(false), 100);
       }
     };
 
@@ -42,17 +42,24 @@ export default function HomePage() {
 
     if (currentIndex < profiles.length - 1) {
       setCurrentIndex((prev) => prev + 1);
+      setTimeout(() => setIsScrolling(false), 300);
     }
   };
 
   return (
     <div className="relative h-[calc(100vh-7rem)]">
       <div
-        className="h-full transition-transform duration-700 ease-in-out"
+        className="absolute inset-0 transition-transform duration-500 ease-in-out"
         style={{ transform: `translateY(-${currentIndex * 100}%)` }}
       >
-        {profiles.map((profile) => (
-          <Card key={profile.id} {...profile} onSwipe={handleSwipe} />
+        {profiles.map((profile, index) => (
+          <div
+            key={profile.id}
+            className="absolute inset-0"
+            style={{ transform: `translateY(${index * 100}%)` }}
+          >
+            <Card {...profile} onSwipe={handleSwipe} />
+          </div>
         ))}
       </div>
     </div>
