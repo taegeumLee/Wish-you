@@ -21,7 +21,7 @@ export default function Page() {
             </button>
           </Link>
         </div>
-        {/* 구분선 컨테이너 */}
+
         <div className="relative h-1 flex items-center justify-center">
           <div className="absolute w-full border-t border-gray-200 dark:border-gray-700" />
           <span className="relative bg-gray-50 dark:bg-black px-2 text-sm text-gray-500 dark:text-gray-400">

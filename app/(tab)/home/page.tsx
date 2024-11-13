@@ -33,16 +33,23 @@ export default function HomePage() {
     return () => window.removeEventListener("wheel", handleWheel);
   }, [currentIndex, isScrolling, profiles.length]);
 
-  const handleSwipe = (direction: "left" | "right") => {
-    if (direction === "left") {
-      alert("좋아요를 보냈습니다! ❤️");
-    } else {
-      alert("채팅방으로 이동합니다! 💬");
-    }
+  const handleSwipe = async (direction: "left" | "right") => {
+    setIsScrolling(true);
+
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        if (direction === "left") {
+          alert("좋아요를 보냈습니다! ❤️");
+        } else {
+          alert("채팅방으로 이동합니다! 💬");
+        }
+        resolve(null);
+      }, 300);
+    });
 
     if (currentIndex < profiles.length - 1) {
       setCurrentIndex((prev) => prev + 1);
-      setTimeout(() => setIsScrolling(false), 300);
+      setTimeout(() => setIsScrolling(false), 500);
     }
   };
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
+import { AnimatePresence } from "framer-motion";
 
 const metadata: Metadata = {
   title: "MinsTaegram",
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${geistSans.variable} antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <AnimatePresence mode="wait">{children}</AnimatePresence>
+        </AuthProvider>
       </body>
     </html>
   );

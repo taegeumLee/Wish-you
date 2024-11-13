@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const defaultProfileImage = "/images/default-profile.jpg";
+    const defaultProfileImage = "/default-profile.jpg";
 
     const user = await db.user.create({
       data: {

@@ -1,131 +1,96 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  emailSchema,
-  passwordSchema,
-  type EmailForm,
-  type PasswordForm,
-} from "../schemas/auth";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useFormState } from "react-dom";
+import { login } from "../actions";
+import { useState } from "react";
+import { z } from "zod";
+
+const emailSchema = z.string().email("Invalid email format");
 
 export default function LoginForm() {
-  const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
+  const [state, dispatch] = useFormState(login, null);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isEmailExists, setIsEmailExists] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
-  const passwordInputRef = useRef<HTMLInputElement>(null);
-  const { login } = useAuth();
+  const [showPasswordField, setShowPasswordField] = useState(false);
+  const [email, setEmail] = useState("");
 
-  const emailForm = useForm<EmailForm>({
-    resolver: zodResolver(emailSchema),
-  });
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmailError(null);
+    setIsChecking(true);
 
-  const passwordForm = useForm<PasswordForm>({
-    resolver: zodResolver(passwordSchema),
-  });
-
-  useEffect(() => {
-    if (showPassword && passwordInputRef.current) {
-      passwordInputRef.current.focus();
-    }
-  }, [showPassword]);
-
-  const onEmailSubmit = async (data: EmailForm) => {
     try {
-      const response = await fetch("/api/check-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const emailValidation = emailSchema.safeParse(email);
+      setIsEmailValid(emailValidation.success);
 
-      const result = await response.json();
+      if (emailValidation.success) {
+        const response = await fetch("/api/check-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
 
-      if (result.exists) {
-        setShowPassword(true);
-        setEmailError(null);
+        const data = await response.json();
+        setIsEmailExists(data.exists);
+
+        if (data.exists) {
+          setShowPasswordField(true);
+        } else {
+          setEmailError("Email does not exist. Please sign up.");
+        }
       } else {
-        setEmailError("존재하지 않는 이메일입니다");
+        setEmailError("Invalid email format");
       }
     } catch (error) {
-      setEmailError("오류가 발생했습니다");
+      setEmailError("An error occurred while checking email.");
+    } finally {
+      setIsChecking(false);
     }
   };
-  const onPasswordSubmit = async (data: PasswordForm) => {
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: emailForm.getValues("email"),
-          password: data.password,
-        }),
-      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "로그인에 실패했습니다");
-      }
-
-      const userData = await response.json();
-      if (userData.success) {
-        router.push("/home");
-        router.refresh();
-      }
-    } catch (error) {
-      passwordForm.setError("password", {
-        message:
-          error instanceof Error
-            ? error.message
-            : "로그인 중 오류가 발생했습니다",
-      });
-    }
-  };
   return (
     <div className="flex flex-col gap-3 w-full">
-      <form onSubmit={emailForm.handleSubmit(onEmailSubmit)}>
+      <form onSubmit={handleEmailSubmit}>
         <div className="flex flex-col gap-2">
           <input
             type="email"
-            {...emailForm.register("email")}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2.5 bg-white dark:bg-zinc-800 text-black dark:text-white rounded-lg border border-gray-200 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-400 placeholder:text-sm focus:outline-none focus:ring-2"
-            placeholder="이메일을 입력하세요"
+            placeholder="Enter your email"
+            required
           />
-          {emailForm.formState.errors.email && (
-            <p className="text-red-500 text-sm">
-              {emailForm.formState.errors.email.message}
-            </p>
+          {isChecking && (
+            <p className="text-blue-500 text-sm">Checking email...</p>
           )}
           {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
         </div>
-
-        {!showPassword && (
+        {!showPasswordField ? (
           <button
             type="submit"
-            className="w-full mt-3 px-4 py-2 bg-neutral-200 text-black rounded-lg hover:bg-blue-400"
+            className="w-full mt-3 px-4 py-2 bg-neutral-200 text-black rounded-lg hover:bg-blue-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-neutral-200"
+            disabled={isChecking || !email}
           >
-            다음
+            Next
           </button>
-        )}
+        ) : null}
       </form>
-
-      {showPassword && (
-        <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}>
+      {showPasswordField ? (
+        <form action={dispatch}>
+          <input type="hidden" name="email" value={email} />
           <div className="flex flex-col gap-2">
             <input
+              name="password"
               type="password"
-              {...passwordForm.register("password")}
-              ref={passwordInputRef}
               className="w-full px-4 py-2.5 bg-white dark:bg-zinc-800 text-black dark:text-white rounded-lg border border-gray-200 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-400 placeholder:text-sm focus:outline-none focus:ring-2"
-              placeholder="비밀번호를 입력하세요"
+              placeholder="Enter your password"
+              required
             />
-            {passwordForm.formState.errors.password && (
+            {state?.fieldErrors?.password && (
               <p className="text-red-500 text-sm">
-                {passwordForm.formState.errors.password.message}
+                {state.fieldErrors.password[0]}
               </p>
             )}
           </div>
@@ -133,10 +98,10 @@ export default function LoginForm() {
             type="submit"
             className="w-full mt-3 px-4 py-2 bg-neutral-200 text-black rounded-lg hover:bg-blue-400"
           >
-            로그인
+            Login
           </button>
         </form>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -29,20 +29,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    checkAuth();
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("/api/auth/me");
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error("인증 확인 중 오류 발생:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      checkAuth();
+    }
   }, []);
 
-  const checkAuth = async () => {
-    try {
-      const response = await fetch("/api/auth/me");
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (loading) {
+    return null; // 또는 로딩 컴포넌트
+  }
 
   const login = async (email: string, password: string) => {
     const response = await fetch("/api/login", {
@@ -59,8 +67,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await response.json();
     if (data.success) {
       setUser(data.user);
+      await new Promise((resolve) => setTimeout(resolve, 100));
       router.push("/home");
-      router.refresh();
     }
   };
 
@@ -68,8 +76,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const response = await fetch("/api/auth/logout", { method: "POST" });
     if (response.ok) {
       setUser(null);
+      await new Promise((resolve) => setTimeout(resolve, 100));
       router.push("/");
-      router.refresh();
     }
   };
 

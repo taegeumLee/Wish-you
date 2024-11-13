@@ -1,9 +1,9 @@
-import db from "@/lib/db";
 import { NextResponse } from "next/server";
+import db from "@/lib/db";
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { email } = await req.json();
+    const { email } = await request.json();
 
     const user = await db.user.findUnique({
       where: { email },
@@ -11,9 +11,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ exists: !!user });
   } catch (error) {
-    return NextResponse.json(
-      { error: "서버 오류가 발생했습니다" },
-      { status: 500 }
-    );
+    return NextResponse.json({ exists: false }, { status: 500 });
   }
 }
