@@ -101,12 +101,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = async (data: SignUpForm) => {
     const response = await fetch("/api/signup", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     });
 
     if (!response.ok) {
-      throw new Error("회원가입에 실패했습니다");
+      const errorData = await response.json();
+      throw new Error(errorData.error || "회원가입에 실패했습니다");
     }
 
     const { user } = await response.json();
