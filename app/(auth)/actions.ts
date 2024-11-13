@@ -5,10 +5,9 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import db from "@/lib/db";
 import bcrypt from "bcrypt";
-
 const loginSchema = z.object({
-  email: z.string().email("올바른 이메일 형식이 아닙니다"),
-  password: z.string().min(6, "비밀번호는 최소 6자 이상이어야 합니다"),
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 interface LoginFormState {
@@ -44,7 +43,7 @@ export async function login(
   if (!user || !user.password) {
     return {
       fieldErrors: {
-        email: ["존재하지 않는 이메일입니다"],
+        email: ["Email does not exist"],
       },
     };
   }
@@ -54,7 +53,7 @@ export async function login(
   if (!isValid) {
     return {
       fieldErrors: {
-        password: ["비밀번호가 올바르지 않습니다"],
+        password: ["Invalid password"],
       },
     };
   }
@@ -63,7 +62,7 @@ export async function login(
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 60 * 60 * 24 * 7, // 7일
+    maxAge: 60 * 60 * 24 * 7, // 7 days
   });
 
   redirect("/home");

@@ -19,7 +19,7 @@ export default function SignUpForm() {
     try {
       await signup(data);
     } catch (error) {
-      console.error("회원가입 중 오류 발생:", error);
+      console.error("Error during sign up:", error);
     }
   };
 
@@ -29,7 +29,7 @@ export default function SignUpForm() {
         <input
           type="email"
           {...register("email")}
-          placeholder="이메일"
+          placeholder="Email"
           className="w-full px-4 py-2.5 bg-white dark:bg-zinc-800 text-black dark:text-white rounded-lg border border-gray-200 dark:border-gray-700"
         />
         {errors.email && (
@@ -41,7 +41,7 @@ export default function SignUpForm() {
         <input
           type="password"
           {...register("password")}
-          placeholder="비밀번호"
+          placeholder="Password"
           className="w-full px-4 py-2.5 bg-white dark:bg-zinc-800 text-black dark:text-white rounded-lg border border-gray-200 dark:border-gray-700"
         />
         {errors.password && (
@@ -53,7 +53,7 @@ export default function SignUpForm() {
         <input
           type="text"
           {...register("name")}
-          placeholder="이름"
+          placeholder="Name"
           className="w-full px-4 py-2.5 bg-white dark:bg-zinc-800 text-black dark:text-white rounded-lg border border-gray-200 dark:border-gray-700"
         />
         {errors.name && (
@@ -65,7 +65,7 @@ export default function SignUpForm() {
         <input
           type="number"
           {...register("age", { valueAsNumber: true })}
-          placeholder="나이"
+          placeholder="Age"
           className="w-full px-4 py-2.5 bg-white dark:bg-zinc-800 text-black dark:text-white rounded-lg border border-gray-200 dark:border-gray-700"
         />
         {errors.age && (
@@ -77,7 +77,7 @@ export default function SignUpForm() {
         <input
           type="number"
           {...register("height", { valueAsNumber: true })}
-          placeholder="키"
+          placeholder="Height"
           className="w-full px-4 py-2.5 bg-white dark:bg-zinc-800 text-black dark:text-white rounded-lg border border-gray-200 dark:border-gray-700"
         />
         {errors.height && (
@@ -88,7 +88,7 @@ export default function SignUpForm() {
       <div>
         <textarea
           {...register("description")}
-          placeholder="자기소개"
+          placeholder="About me"
           className="w-full px-4 py-2.5 bg-white dark:bg-zinc-800 text-black dark:text-white rounded-lg border border-gray-200 dark:border-gray-700"
         />
       </div>
@@ -98,7 +98,7 @@ export default function SignUpForm() {
         disabled={isSubmitting}
         className="w-full px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg disabled:opacity-50"
       >
-        {isSubmitting ? "처리중..." : "회원가입"}
+        {isSubmitting ? "Processing..." : "Sign Up"}
       </button>
     </form>
   );

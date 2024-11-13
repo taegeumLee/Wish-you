@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { BellIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { BellIcon } from "@heroicons/react/24/outline";
+import { HiOutlinePaperAirplane } from "react-icons/hi2";
 
 export default function Header() {
   return (
@@ -19,7 +20,7 @@ export default function Header() {
           </button>
           <button className="p-2">
             <Link href="/chat">
-              <PaperAirplaneIcon className="size-6 text-black dark:text-white rotate-45" />
+              <HiOutlinePaperAirplane className="size-6 text-black dark:text-white -rotate-45" />
             </Link>
           </button>
         </div>

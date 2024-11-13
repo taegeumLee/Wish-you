@@ -22,7 +22,7 @@ interface MenuItemProps {
 const MenuItem = ({ icon, label, onClick, className = "" }: MenuItemProps) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center justify-between p-4 bg-white dark:bg-zinc-800 rounded-lg ${className}`}
+    className={`w-full flex items-center justify-between p-4 bg-neutral-100 dark:bg-zinc-800 rounded-lg ${className}`}
   >
     <div className="flex items-center gap-3">
       {icon}
@@ -34,7 +34,7 @@ const MenuItem = ({ icon, label, onClick, className = "" }: MenuItemProps) => (
 
 export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -47,12 +47,16 @@ export default function ProfilePage() {
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   if (!user) return null;
 
   return (
     <PageTransition>
       <div className="min-h-screen p-4">
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center my-8">
           <div className="relative w-24 h-24 mb-4">
             <Image
               src={user.profileImage || DEFAULT_PROFILE_IMAGE}

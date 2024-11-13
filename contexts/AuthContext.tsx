@@ -29,9 +29,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
+    let mounted = true;
+
     const checkAuth = async () => {
       try {
         const response = await fetch("/api/auth/me");
+        if (!mounted) return;
+
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
@@ -39,17 +43,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error("인증 확인 중 오류 발생:", error);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
-    if (typeof window !== "undefined") {
-      checkAuth();
-    }
+    checkAuth();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   if (loading) {
-    return null; // 또는 로딩 컴포넌트
+    return <div>Loading...</div>; // 또는 적절한 로딩 컴포넌트
   }
 
   const login = async (email: string, password: string) => {
@@ -67,16 +75,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await response.json();
     if (data.success) {
       setUser(data.user);
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 0));
       router.push("/home");
     }
   };
 
+  /**
+   * 사용자 로그아웃을 처리하는 함수
+   * 1. POST 요청으로 서버의 로그아웃 API를 호출
+   * 2. 요청이 성공하면 사용자 상태를 초기화하고 홈페이지로 리다이렉트
+   */
   const logout = async () => {
-    const response = await fetch("/api/auth/logout", { method: "POST" });
+    // 로그아웃 API 호출
+    const response = await fetch("/api/logout", { method: "POST" });
+
+    // 요청이 성공적으로 처리된 경우
     if (response.ok) {
+      // 사용자 상태를 null로 초기화
       setUser(null);
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      // 메인 페이지로 리다이렉트
       router.push("/");
     }
   };

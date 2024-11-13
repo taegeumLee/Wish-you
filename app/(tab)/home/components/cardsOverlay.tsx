@@ -1,3 +1,6 @@
+import { HiOutlinePaperAirplane } from "react-icons/hi2";
+import { FaRegHeart } from "react-icons/fa";
+
 interface CardOverlayProps {
   dragOffset: number;
 }
@@ -28,7 +31,11 @@ export function CardOverlay({ dragOffset }: CardOverlayProps) {
               dragOffset > 0 ? "right-8" : "left-8"
             } text-neutral-300 text-2xl font-bold transition-opacity duration-200`}
           >
-            {dragOffset > 0 ? "채팅하기" : "좋아요"}
+            {dragOffset > 0 ? (
+              <HiOutlinePaperAirplane className="rotate-45" />
+            ) : (
+              <FaRegHeart />
+            )}
           </div>
         )}
       </div>

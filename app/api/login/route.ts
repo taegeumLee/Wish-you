@@ -9,14 +9,14 @@ export async function POST(req: Request) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { error: "이메일과 비밀번호를 모두 입력해주세요" },
+        { error: "Please enter both email and password" },
         { status: 400 }
       );
     }
 
     if (typeof email !== "string" || typeof password !== "string") {
       return NextResponse.json(
-        { error: "잘못된 입력 형식입니다" },
+        { error: "Invalid input format" },
         { status: 400 }
       );
     }
@@ -37,10 +37,7 @@ export async function POST(req: Request) {
       !user.password ||
       !(await bcrypt.compare(password, user.password))
     ) {
-      return NextResponse.json(
-        { error: "이메일 또는 비밀번호가 올바르지 않습니다" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid password" }, { status: 401 });
     }
 
     const { password: _, ...userWithoutPassword } = user;
@@ -54,14 +51,14 @@ export async function POST(req: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 7, // 7일
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
     return response;
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
-      { error: "서버 오류가 발생했습니다" },
+      { error: "A server error occurred" },
       { status: 500 }
     );
   }

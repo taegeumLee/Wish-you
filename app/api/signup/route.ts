@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import db from "@/lib/db";
-import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
