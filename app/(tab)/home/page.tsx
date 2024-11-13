@@ -3,15 +3,24 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "./components/Card";
-import { profiles } from "./data/profiles";
 import { HiPaperAirplane } from "react-icons/hi2";
 import { FaHeart } from "react-icons/fa";
+import getProfiles from "./data/profiles";
 
 export default function HomePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [profiles, setProfiles] = useState<any[]>([]);
   const [isScrolling, setIsScrolling] = useState(false);
   const [direction, setDirection] = useState<"up" | "down">("down");
   const [showIcon, setShowIcon] = useState<"heart" | "chat" | null>(null);
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      const data = await getProfiles();
+      setProfiles(data);
+    };
+    fetchProfiles();
+  }, []);
 
   useEffect(() => {
     let lastScrollTime = Date.now();
@@ -39,6 +48,10 @@ export default function HomePage() {
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleWheel);
   }, [currentIndex, isScrolling, profiles.length]);
+
+  if (profiles.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   const handleSwipe = async (direction: "left" | "right") => {
     setIsScrolling(true);

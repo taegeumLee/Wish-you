@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
 import { AnimatePresence } from "framer-motion";
@@ -9,11 +8,6 @@ const metadata: Metadata = {
   description: "MinsTaegram - Connect with people",
 };
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-});
-
 export default function RootLayout({
   children,
 }: {
@@ -21,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className={`${geistSans.variable} antialiased`}>
+      <body className="font-sans antialiased">
         <AuthProvider>
           <AnimatePresence mode="wait">{children}</AnimatePresence>
         </AuthProvider>

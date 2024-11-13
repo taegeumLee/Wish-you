@@ -27,12 +27,12 @@ export function useFormState() {
       const data = await response.json();
 
       if (data.exists) {
-        setEmailError("이미 존재하는 이메일입니다");
+        setEmailError("Email already exists");
       } else {
         handleStepComplete();
       }
     } catch (error) {
-      setEmailError("이메일 확인 중 오류가 발생했습니다");
+      setEmailError("An error occurred while checking email");
     } finally {
       setIsChecking(false);
     }

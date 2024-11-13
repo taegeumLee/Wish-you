@@ -7,6 +7,7 @@ export interface Profile {
   age: number;
   height: number;
   description: string;
+  profileImage: string;
 }
 
 export interface CardProps extends Profile {

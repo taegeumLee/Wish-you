@@ -16,6 +16,23 @@ export default {
       aspectRatio: {
         "9/16": "9 / 16",
       },
+      fontFamily: {
+        sans: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Apple SD Gothic Neo",
+          "Pretendard Variable",
+          "Pretendard",
+          "Roboto",
+          "Noto Sans KR",
+          "Segoe UI",
+          "Malgun Gothic",
+          "Apple Color Emoji",
+          "Segoe UI Emoji",
+          "Segoe UI Symbol",
+          "sans-serif",
+        ],
+      },
     },
   },
 

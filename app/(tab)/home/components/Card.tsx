@@ -12,6 +12,8 @@ export const Card = memo(function Card({
   age,
   height,
   description,
+  id,
+  profileImage,
   onSwipe,
 }: CardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -30,7 +32,13 @@ export const Card = memo(function Card({
           transition: dragStart ? "none" : "transform 0.3s ease-out",
         }}
       >
-        <Image src={image} alt={name} fill className="object-cover" priority />
+        <Image
+          src={profileImage}
+          alt={name}
+          fill
+          className="object-cover"
+          priority
+        />
         <CardOverlay dragOffset={dragOffset} />
         <ProfileInfo
           name={name}
