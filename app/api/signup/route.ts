@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "이미 사용 중인 이메일입니다" },
+        { error: "Email is already in use" },
         { status: 400 }
       );
     }
@@ -36,20 +36,20 @@ export async function POST(req: Request) {
       },
     });
 
-    // 회원가입 성공 시 쿠키 설정
+    // Set cookie after successful signup
     const response = NextResponse.json({ success: true, user });
     response.cookies.set("userId", String(user.id), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 7, // 7일
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
     return response;
   } catch (error) {
-    console.error("회원가입 오류:", error);
+    console.error("Signup error:", error);
     return NextResponse.json(
-      { error: "회원가입 중 오류가 발생했습니다" },
+      { error: "An error occurred during signup" },
       { status: 500 }
     );
   }
