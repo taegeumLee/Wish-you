@@ -7,6 +7,10 @@ interface User {
   email: string;
   name: string;
   profileImage: string;
+  likePoint: number;
+  _count?: {
+    likedBy: number;
+  };
 }
 interface SignUpForm {
   email: string;

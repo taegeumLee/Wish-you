@@ -15,7 +15,6 @@ datasource db {
 
 model User {
   id           Int       @id @default(autoincrement())
-  likePoint    Int       @default(36)
   password     String?
   name         String
   email        String    @unique
@@ -26,13 +25,15 @@ model User {
   description  String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  ChatRoom     ChatRoom? @relation(fields: [chatRoomId], references: [id])
+  ChatRooms    ChatRoom? @relation(fields: [chatRoomId], references: [id])
   chatRoomId   Int?
-  Message      Message[]
+  Messages     Message[]
   //social login
   googleId     String?   @unique
   naverId      String?   @unique
   kakaoId      String?   @unique
+  likes        Like[]    @relation("UserLikes")
+  likedBy      Like[]    @relation("UserLikedBy")
 }
 
 model ChatRoom {
@@ -52,4 +53,16 @@ model Message {
   chatRoomId Int
   user       User      @relation(fields: [userId], references: [id])
   userId     Int
+}
+
+model Like {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation("UserLikes", fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  targetUser   User     @relation("UserLikedBy", fields: [targetUserId], references: [id], onDelete: Cascade)
+  targetUserId Int
+
+  @@unique([userId, targetUserId])
 }

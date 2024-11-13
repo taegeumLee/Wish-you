@@ -58,10 +58,35 @@ export default function HomePage() {
     setShowIcon(direction === "left" ? "heart" : "chat");
 
     await new Promise((resolve) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         setShowIcon(null);
         if (direction === "left") {
-          alert("좋아요를 보냈습니다! ❤️");
+          try {
+            const response = await fetch("/api/like", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                targetUserId: profiles[currentIndex].id,
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error("좋아요 처리 중 오류가 발생했습니다");
+            }
+
+            const data = await response.json();
+            setProfiles(
+              profiles.map((profile) =>
+                profile.id === profiles[currentIndex].id
+                  ? { ...profile, likeCount: data.likeCount }
+                  : profile
+              )
+            );
+          } catch (error) {
+            console.error("좋아요 처리 중 오류:", error);
+          }
         } else {
           alert("채팅방으로 이동합니다! 💬");
         }

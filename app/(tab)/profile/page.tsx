@@ -6,6 +6,7 @@ import {
   UserCircleIcon,
   Cog6ToothIcon,
   ArrowRightEndOnRectangleIcon,
+  HeartIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageTransition } from "@/components/PageTransition";
@@ -17,9 +18,16 @@ interface MenuItemProps {
   label: string;
   onClick?: () => void;
   className?: string;
+  rightContent?: React.ReactNode;
 }
 
-const MenuItem = ({ icon, label, onClick, className = "" }: MenuItemProps) => (
+const MenuItem = ({
+  icon,
+  label,
+  onClick,
+  className = "",
+  rightContent,
+}: MenuItemProps) => (
   <button
     onClick={onClick}
     className={`w-full flex items-center justify-between p-4 bg-neutral-100 dark:bg-zinc-800 rounded-lg ${className}`}
@@ -28,7 +36,7 @@ const MenuItem = ({ icon, label, onClick, className = "" }: MenuItemProps) => (
       {icon}
       <span>{label}</span>
     </div>
-    <span className="text-gray-400">›</span>
+    {rightContent || <span className="text-gray-400">›</span>}
   </button>
 );
 
@@ -71,6 +79,12 @@ export default function ProfilePage() {
           </div>
           <h1 className="text-2xl font-bold mb-1">{user.name}</h1>
           <p className="text-gray-500 dark:text-gray-400">{user.email}</p>
+          <div className="flex items-center gap-1 mt-2">
+            <HeartIcon className="w-5 h-5 text-red-500" />
+            <span className="text-lg font-semibold">
+              {user._count?.likedBy || 0}
+            </span>
+          </div>
         </div>
 
         <div className="space-y-4">

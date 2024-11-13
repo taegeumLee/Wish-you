@@ -21,6 +21,11 @@ export async function GET() {
         email: true,
         name: true,
         profileImage: true,
+        _count: {
+          select: {
+            likedBy: true,
+          },
+        },
       },
     });
 
